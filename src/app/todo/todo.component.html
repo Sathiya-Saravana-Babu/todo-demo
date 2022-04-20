@@ -1,59 +1,105 @@
-<app-navbar></app-navbar>
-<div class="todo-container">
-
-  <div class="row list-row">
-    <div class="col-sm-4 col-xs-12">
-      <h2>To Do List</h2>
+<div #target>
+  <app-navbar ></app-navbar>
+  <div class="todo-container">
+  
+    <div class="row list-row">
+      <div class="col-md-4 col-sm-12">
+        <h2>To Do List</h2>
+      </div>
+      <div class="col-md-4 d-none d-sm-block">
+        <h2>Done</h2>
+      </div>
     </div>
-    <div class="col-sm-4 d-none d-sm-block">
-      <h2>Done</h2>
-    </div>
-  </div>
-
-  <div class="row list-row">
-
-    <div class="col-sm-4 col-xs-12">
-      <div cdkDropList #todoList="cdkDropList"  [cdkDropListData]="todo"  [cdkDropListConnectedTo]="[doneList]"  class="todo-list"  (cdkDropListDropped)="drop($event)">
-        <div class="card" *ngFor="let item of todo" cdkDrag>
-          <div class="row">
-            <div class="col-1">
-              <input class="form-check-input" (click)="radioClick(item, 'todo')" type="radio" [name]="item.id" [id]="item.id"/>
+  
+    <div  class="row list-row">
+  
+      <div class="col-md-4 col-sm-12">
+        <div cdkDropList #todoList="cdkDropList"  [cdkDropListData]="todo"  [cdkDropListConnectedTo]="[doneList]"  class="todo-list"  (cdkDropListDropped)="drop($event)">
+          
+          <div class="card" *ngIf="taskInput" >
+            <div class="row">
+              <div class="col-1">
+                <input class="form-check-input" (click)="onChange()" type="radio" name="new" id="new" [checked]="data.completed" />
+              </div>
+              <div class="col-10">
+                <input type="text" [(ngModel)]='data.title' id="new" placeholder="Start Typing...">
+              </div>
+              <div class="col-1" >
+                <i class="fa fa-check" *ngIf="data.title != ''" (click)="addTask()" aria-hidden="true"></i>
+              </div>
+              <div class="col-1" >
+                <i class="fa fa-trash"  (click)="removeInput()"  aria-hidden="true"></i>
+              </div>
             </div>
-            <div class="col-8">{{ item.title }}</div>
-            <div class="col-1">
-              <i class="fa fa-pencil" (click)="openDialog(item, 'todo')" aria-hidden="true"></i>
+          </div>
+          <div class="card" *ngFor="let item of todo" cdkDrag>
+            <div class="row" (click)="onClick(item.id)">
+              <div class="col-1">
+                <input class="form-check-input" (click)="radioClick(item, 'todo')" type="radio" [name]="item.id" [id]="item.id"/>
+              </div>
+              <div class="col-10">
+                <div class="title" *ngIf="editId!=item.id" > {{ item.title.substring(0, 40) }} </div>
+                <input #focus *ngIf="editId==item.id" type="text" [(ngModel)]='item.title' id="new" placeholder="Start Typing...">
+              </div>
+              <div *ngIf="toolbarId.indexOf(item.id) != -1" [ngClass]="{box1: toolbarId.indexOf(item.id) != -1, box2:toolbarId.indexOf(item.id) == -1}" >
+                <i class="fa fa-pencil" *ngIf="editId!=item.id" (click)="editInput(item, 'todo')" aria-hidden="true"></i>
+                <i class="fa fa-check" *ngIf="editId==item.id" (click)="onEdit(item, 'todo')" aria-hidden="true"></i>
+                <i class="fa fa-trash"  (click)="onDelete(item.id)"  aria-hidden="true"></i>
+              </div>
             </div>
-            <div class="col-1">
-              <i class="fa fa-trash"  (click)="onDelete(item.id)"  aria-hidden="true"></i>
+            <!-- <div class="row">
+              <div class="col-1">
+                <input class="form-check-input" (click)="radioClick(item, 'todo')" type="radio" [name]="item.id" [id]="item.id"/>
+              </div>
+              <div class="col-8">
+                <div *ngIf="editId!=item.id" > {{ item.title }} </div>
+                <input *ngIf="editId==item.id" type="text" #focus [(ngModel)]='item.title' id="new" placeholder="Start Typing...">
+              </div>
+              <div class="col-1 icon1">
+                <i class="fa fa-pencil" *ngIf="editId!=item.id" (click)="editInput(item, 'todo')" aria-hidden="true"></i>
+                <i class="fa fa-check" *ngIf="editId==item.id" (click)="onEdit(item, 'todo')" aria-hidden="true"></i>
+              </div>
+              <div class="col-1 icon2">
+                <i class="fa fa-trash"  (click)="onDelete(item.id)"  aria-hidden="true"></i>
+              </div>
+            </div> -->
+          </div>
+         
+        </div>
+      </div>
+  
+      <div class="col-md-4">
+        <div  cdkDropList  #doneList="cdkDropList"  [cdkDropListData]="done"  [cdkDropListConnectedTo]="[todoList]"  class="todo-list"  (cdkDropListDropped)="drop($event)">
+          <div class="card" *ngFor="let item of done" cdkDrag>
+            <div class="row" (click)="onClick(item.id)">
+              <div class="col-1">
+                <input class="form-check-input"  (click)="radioClick(item, 'done')"  type="radio"  [name]="item.id"  [id]="item.id"  checked  />
+              </div>
+              <div class="col-10">
+                <div class="title" *ngIf="editId!=item.id" > {{item.title.substring(0, 40) }} </div>
+                <input *ngIf="editId==item.id" type="text" [(ngModel)]='item.title' id="new" placeholder="Start Typing...">
+              </div>
+              <div *ngIf="toolbarId.indexOf(item.id) != -1" [ngClass]="{box1: toolbarId.indexOf(item.id) != -1, box2:toolbarId.indexOf(item.id) == -1}" >
+                <i class="fa fa-pencil" *ngIf="editId!=item.id" (click)="editInput(item, 'todo')" aria-hidden="true"></i>
+                <i class="fa fa-check" *ngIf="editId==item.id" (click)="onEdit(item, 'todo')" aria-hidden="true"></i>
+                <i class="fa fa-trash"  (click)="onDelete(item.id)"  aria-hidden="true"></i>
+              </div>
             </div>
           </div>
         </div>
       </div>
+  
     </div>
-
-    <div class="col-sm-4">
-      <div  cdkDropList  #doneList="cdkDropList"  [cdkDropListData]="done"  [cdkDropListConnectedTo]="[todoList]"  class="todo-list"  (cdkDropListDropped)="drop($event)">
-        <div class="card" *ngFor="let item of done" cdkDrag>
-          <div class="row">
-            <div class="col-1">
-              <input  class="form-check-input"  (click)="radioClick(item, 'done')"  type="radio"  [name]="item.id"  [id]="item.id"  checked  />
-            </div>
-            <div class="col-8">{{ item.title }}</div>
-            <div class="col-1">
-              <i  class="fa fa-pencil"  (click)="openDialog(item, 'done')"  aria-hidden="true"  ></i>
-            </div>
-            <div class="col-1">
-              <i class="fa fa-trash"  (click)="onDelete(item.id)"  aria-hidden="true"  ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
-</div>
-<div class="customizer">
-  <a href="javascript:void(0)"  mat-raised-button  (click)="openDialog('null', '')"  class="btn btn-circle btn-lg service-panel-toggle"  >
-    <i class="fa fa-plus" aria-hidden="true"></i>
-  </a>
+  <!-- <div class="customizer">
+    <a href="javascript:void(0)"  mat-raised-button  (click)="openDialog('null', '')"  class="btn btn-circle btn-lg service-panel-toggle"  >
+      <i class="fa fa-plus" aria-hidden="true"></i>
+    </a>
+  </div> -->
+  
+  <div class="customizer">
+    <a href="javascript:void(0)"  mat-raised-button  (click)="createTaskInput(target)"  class="btn btn-circle btn-lg service-panel-toggle"  >
+      <i class="fa fa-plus" aria-hidden="true"></i>
+    </a>
+  </div>  
 </div>

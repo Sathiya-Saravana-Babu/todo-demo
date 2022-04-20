@@ -2,13 +2,15 @@
   .list-row {
     border-bottom: 2px solid #d4d4d4;
   }
-  .col-sm-4 {
+  .col-md-4 {
     border-right: 2px solid #d4d4d4;
     padding: 0;
   }
 }
 .todo-list {
   padding-bottom: 10px;
+  text-transform: capitalize;
+  font-weight: 500;
 }
 
 .card {
@@ -23,11 +25,30 @@ h2 {
   font-weight: 600;
   padding-left: 22px;
 }
-.fa-pencil {
+.fa-pencil{
   color: #880bd6;
+  font-size: 18px;
+  padding: 14px;
+  background-color:aliceblue;
+}
+.fa-check {
+  color: #13b62e;
+  font-size: 18px;
+  padding: 14px 12px;
+  background-color: #dffddf;
 }
 .fa-trash {
   color: #cc0000;
+  font-size: 18px;
+  padding: 14px;
+  background-color: antiquewhite;
+}
+
+input[type="text"] {
+  outline: none;
+  border: none;
+  width: 80%;
+  text-transform: capitalize;
 }
 
 .cdk-drag-preview {
@@ -75,4 +96,30 @@ h2 {
   .todo-list {
     padding-bottom: 0px;
   }
+}
+.box1{
+  position: absolute;
+  width: 86px;
+  height: 45px;
+  bottom: 1px;
+  padding: 0px;
+  animation-name: example;
+  animation-duration: 1s;
+  right: 0;
+}
+@keyframes example {
+  from {right: -20px;}
+  to {right: 0;}
+}
+.title{
+  white-space: nowrap;
+}
+.box2{
+  // display: none;
+  animation-name: example2;
+  animation-duration: 0s;
+}
+@keyframes example2 {
+  from {left: 0px;}
+  to {left: -40px;}
 }
